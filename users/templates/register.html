@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/@sweetalert2/theme-minimal@4/minimal.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.js"></script>
+</head>
+
+<body class="bg-light">
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header text-center">
+                        <h3>Registro</h3>
+                    </div>
+                    <div class="card-body">
+                        <form method="POST" onsubmit="return validateForm()">
+                            {% csrf_token %}
+                            {{ form.as_p }}
+                            <div class="form-group text-center">
+                                <button type="submit" class="btn btn-primary">Registrarse</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function validateForm() {
+            var pass1 = document.getElementById('id_password1').value;
+            var pass2 = document.getElementById('id_password2').value;
+            var tel = document.getElementById('id_tel').value;
+            var controlNumber = document.getElementById('id_control_number').value;
+
+            // Expresión regular para validar la presencia de al menos un número, una mayúscula y un carácter especial
+            var regex = /^(?=.*\d)(?=.*[A-Z])(?=.*[!#$%&?])/;
+
+            // Verificar si la contraseña tiene menos de 8 caracteres
+            if (pass1.length < 8) {
+                Swal.fire({
+                    title: "Contraseña inválida",
+                    text: "La contraseña debe tener al menos 8 caracteres.",
+                    icon: "error",
+                });
+                return false;
+            }
+
+            // Verificar si la contraseña no cumple con los requisitos de seguridad
+            if (!regex.test(pass1)) {
+                Swal.fire({
+                    title: "Contraseña inválida",
+                    text: "La contraseña debe incluir al menos 1 número, 1 letra mayúscula y 1 carácter especial (!#$%&?).",
+                    icon: "error",
+                });
+                return false;
+            }
+
+            // Verificar si las contraseñas coinciden
+            if (pass1 !== pass2) {
+                Swal.fire({
+                    title: "Error",
+                    text: "Las contraseñas no coinciden.",
+                    icon: "error",
+                });
+                return false;
+            }
+
+            // Validar teléfono (exactamente 10 dígitos)
+            var telRegex = /^\d{10}$/;
+            if (!telRegex.test(tel)) {
+                Swal.fire({
+                    title: "Teléfono inválido",
+                    text: "El teléfono debe tener exactamente 10 dígitos.",
+                    icon: "error",
+                });
+                return false;
+            }
+
+            // Validar matrícula (formato específico: 5 dígitos + 2 letras + 3 dígitos)
+            var controlNumberRegex = /^[0-9]{5}[a-zA-Z]{2}[0-9]{3}$/;
+            if (!controlNumberRegex.test(controlNumber)) {
+                Swal.fire({
+                    title: "Matrícula inválida",
+                    text: "El número de control debe tener el formato adecuado (ej. 20223tn018).",
+                    icon: "error",
+                });
+                return false;
+            }
+
+            // Si todo está bien, se permite el envío del formulario
+            return true;
+        }
+
+    </script>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+
+</html>

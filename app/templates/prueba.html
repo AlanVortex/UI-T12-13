@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prueba</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-6 text-center">
+                <!-- Como mostrar información que viene desde el back -->
+                {% if objeto1 %}
+                    <div class="card mb-3">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ objeto1.id }} - {{ objeto1.titulo }}</h5>
+                            <p class="card-text">{{ objeto1.descripcion }}</p>
+                        </div>
+                    </div>
+                {% endif %}
+
+                {% if arreglo %}
+                    {% for objeto in arreglo %}
+                        <div class="card mb-2">
+                            <div class="card-body">
+                                <h6 class="card-title">{{ objeto.id }} - {{ objeto.titulo }}</h6>
+                                <p class="card-text">{{ objeto.descripcion }}</p>
+                            </div>
+                        </div>
+                    {% endfor %}   
+                {% endif %}
+
+                <form class="form-inline justify-content-center mb-4">
+                    <input type="text" class="form-control mr-2" placeholder="Ingrese texto..." name="texto">
+                    <button type="submit" class="btn btn-primary">Enviar</button>
+                </form>
+
+                {% if list %}
+                    <ul class="list-group">
+                        {% for personas in list %}
+                            <li class="list-group-item">{{ personas.nombres }} - {{ personas.apellidos }} - {{ personas.edad }}</li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>
