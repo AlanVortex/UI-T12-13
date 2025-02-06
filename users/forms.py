@@ -50,6 +50,27 @@ class CustomUserCreationForm(UserCreationForm):
         if password1 != password2:
             raise ValidationError("Las contraseñas no coinciden.")
         return password2
+    
+    def clean_control_number(self):
+        control_number = self.cleaned_data.get('control_number')
+        regex = r'^[0-9]{5}[a-zA-Z]{2}[0-9]{3}$'
+        if not re.match(regex, control_number):
+            raise ValidationError("Debes ingresar un número de control válido (ej. 20223tn018).")
+        return control_number
+
+    def clean_tel(self):
+        tel = self.cleaned_data.get('tel')
+        regex = r'^[0-9]{10}$'
+        if not re.match(regex, tel):
+            raise ValidationError("Debes ingresar un número de teléfono de 10 dígitos.")
+        return tel
+
+    def clean_email(self):
+        email = self.cleaned_data.get('email')
+        regex = r'^[a-zA-Z0-9._%+-]+@utez\.edu\.mx$'
+        if not re.match(regex, email):
+            raise ValidationError("Debes ingresar un correo electrónico válido de la UTEZ.")
+        return email
 
     class Meta:
         model = CustomUser
@@ -86,6 +107,8 @@ class CustomUserCreationForm(UserCreationForm):
                     'placeholder': 'Número de control',
                     'pattern': '^[0-9]{5}[a-zA-Z]{2}[0-9]{3}$',
                     'title': 'Debes ingresar un número de control válido (ej. 20223tn018)',
+                    'minLength': 10,
+                    'maxLength': 10,
                 }
             ),
             'age': forms.NumberInput(
