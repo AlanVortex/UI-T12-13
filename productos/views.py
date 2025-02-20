@@ -46,4 +46,28 @@ def lista_productos(request):
 
 def ver_productos(request):
     return render(request, 'ver.html')
-    
+
+import json
+#funcion que permite registrar un producto como objeto json    
+def registrar_producto(request):
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body)
+            producto = Producto.objects.create( #create mete directamente el objeto en la base de datos
+                nombre = data['nombre'],
+                precio = data['precio'],
+                imagen = data['imagen']
+            )
+            return JsonResponse({
+                'mensaje': 'Producto registrado correctamente',
+                'id': producto.id
+                } , status=201)
+        except Exception as e:
+            print(str(e))
+            return JsonResponse(
+                {'error': str(e)}, status=400)
+    return JsonResponse(
+        {
+            'error': 'Método no soportado', 
+        }, status=405
+    )
