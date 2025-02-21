@@ -42,3 +42,59 @@ def lista_categoria(request):
 # Vistas que devuelven los productos como JSON
 def ver_categorias(request):
     return render(request, 'verCategoria.html')
+
+import json
+from django.shortcuts import get_object_or_404
+from django.http import JsonResponse
+from .models import Categoria
+
+# Función que permite registrar una categoría como objeto JSON
+def registrar_categoria(request):
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body)
+            categoria = Categoria.objects.create(
+                nombre=data['nombre'],
+                imagen=data['imagen']
+            )
+            return JsonResponse({
+                'mensaje': 'Categoría registrada correctamente',
+                'id': categoria.id
+            }, status=201)
+        except Exception as e:
+            return JsonResponse({'error': str(e)}, status=400)
+    return JsonResponse({'error': 'Método no soportado'}, status=405)
+
+# Función para actualizar una categoría
+def actualizar_categoria(request, id_categoria):
+    if request.method == 'PUT':
+        categoria = get_object_or_404(Categoria, id=id_categoria)
+        try:
+            data = json.loads(request.body)
+            categoria.nombre = data.get('nombre', categoria.nombre)
+            categoria.imagen = data.get('imagen', categoria.imagen)
+            categoria.save()
+            return JsonResponse({'mensaje': 'Categoría actualizada correctamente'}, status=200)
+        except Exception as e:
+            return JsonResponse({'error': str(e)}, status=400)
+    return JsonResponse({'error': 'Método no soportado'}, status=405)
+
+# Función para borrar una categoría
+def borrar_categoria(request, id_categoria):
+    if request.method == 'DELETE':
+        categoria = get_object_or_404(Categoria, id=id_categoria)
+        categoria.delete()
+        return JsonResponse({'mensaje': 'Categoría eliminada correctamente'}, status=200)
+    return JsonResponse({'error': 'Método no soportado'}, status=405)
+
+# Función para obtener una categoría específica
+def obtener_categoria(request, id_categoria):
+    if request.method == 'GET':
+        categoria = get_object_or_404(Categoria, id=id_categoria)
+        data = {
+            'id': categoria.id,
+            'nombre': categoria.nombre,
+            'imagen': categoria.imagen,
+        }
+        return JsonResponse(data, status=200)
+    return JsonResponse({'error': 'Método no soportado'}, status=405)

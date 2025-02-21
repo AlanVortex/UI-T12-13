@@ -71,3 +71,59 @@ def registrar_producto(request):
             'error': 'Método no soportado', 
         }, status=405
     )
+
+from django.shortcuts import get_object_or_404
+#funciones para el metodo put
+def actualizar_producto(request, id_producto):
+    if request.method == 'PUT':
+        producto = get_object_or_404(Producto, id=id_producto)
+        try:
+            #la informacion de la modificacion del producto viene del body del request
+            data = json.loads(request.body)
+            producto.nombre = data.get('nombre', producto.nombre)
+            producto.precio = data.get('precio', producto.precio)
+            producto.imagen = data.get('imagen', producto.imagen)
+            producto.save()
+            return JsonResponse({
+                'mensaje': 'Producto actualizado correctamente'
+            }, status=200)
+        except Exception as e:
+            return JsonResponse(
+                {'error': str(e)}, status=400)
+    return JsonResponse(
+        {
+            'error': 'Método no soportado', 
+        }, status=405
+    )
+
+#funciones para delete
+def borrar_producto(request, id_producto):
+    if request.method == 'DELETE':
+        producto = get_object_or_404(Producto, id=id_producto)
+        producto.delete()
+        return JsonResponse({
+            'mensaje': 'Producto eliminado correctamente'
+        }, status=200)
+    return JsonResponse(
+        {
+            'error': 'Método no soportado', 
+        }, status=405
+    )
+
+#funcion adicional para get con el objetivo de 
+# retornar un producto en especifico
+def obtener_producto(request, id_producto):
+    if request.method == 'GET':
+        producto = get_object_or_404(Producto, id=id_producto)
+        data = {
+            'id': producto.id,
+            'nombre': producto.nombre,
+            'precio': producto.precio,
+            'imagen': producto.imagen,
+        }
+        return JsonResponse(data, status=200)
+    return JsonResponse(
+        {
+            'error': 'Método no soportado', 
+        }, status=405
+    )
