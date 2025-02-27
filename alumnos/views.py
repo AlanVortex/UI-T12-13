@@ -1,13 +1,13 @@
 from rest_framework.renderers import JSONRenderer
 from rest_framework import viewsets
-from .models import Producto
-from .serializers import ProductoSerializer
+from .models import Alumnos
+from .serializers import AlumnosSerializer
 
-class ProductoViewSet(viewsets.ModelViewSet):
+class AlumnosViewSet(viewsets.ModelViewSet):
     #esta variable me dice de donde saco el modelo y la informacion de base de datos
-    queryset = Producto.objects.all()
+    queryset = Alumnos.objects.all()
     #como serializo la informacion
-    serializer_class = ProductoSerializer
+    serializer_class = AlumnosSerializer
     #como renderizar mi informacion   
     renderer_classes = [JSONRenderer]
 
