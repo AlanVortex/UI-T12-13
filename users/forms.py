@@ -131,7 +131,17 @@ class CustomUserCreationForm(UserCreationForm):
             )
         }
 
-#Segundo formulario (Inicio de sesión)
+#Segundo formulario (inicio de sesión)
 class CustomUserLoginForm(AuthenticationForm):
-    pass
-    #pass es una palabra reservada que se utiliza para indicar que no se va a hacer nada
+    username = forms.CharField(label="Correo electrónico", max_length=150)
+    password = forms.CharField(label="Contraseña", widget=forms.PasswordInput)
+    
+def clean(self):
+    cleaned_data = super().clean()
+    username = cleaned_data.get("username")
+    password = cleaned_data.get("password")
+    if username and password:
+        user = authenticate(username=username, password=password)
+        if not user:
+            raise forms.ValidationError("Usuario o contraseña incorrectos.")
+    return cleaned_data
